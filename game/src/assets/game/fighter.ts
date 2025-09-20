@@ -6,6 +6,7 @@ export type Controls = {
   right: () => boolean;
   jump: () => boolean;
   attack: () => boolean;
+  canAttack?: () => boolean;
 };
 
 export class Fighter {
@@ -51,7 +52,8 @@ export class Fighter {
       this.onGround = false;
     }
 
-    if (this.controls.attack() && !this.isAttacking) {
+    // Usar rate limiting para ataques
+    if (this.controls.attack() && !this.isAttacking && this.controls.canAttack?.()) {
       this.isAttacking = true;
       this.attackTimer = this.attackDuration;
     }
