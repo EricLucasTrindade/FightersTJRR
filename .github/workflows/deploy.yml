@@ -1,0 +1,81 @@
+name: Deploy Fighters TJRR
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: game/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./game
+        run: npm ci
+      
+      - name: Run linter
+        working-directory: ./game
+        run: npm run lint
+      
+      - name: Build project
+        working-directory: ./game
+        run: npm run build
+
+  deploy-staging:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: game/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./game
+        run: npm ci
+      
+      - name: Build for staging
+        working-directory: ./game
+        run: npm run build:hmg
+      
+      - name: Deploy to staging
+        run: echo "Deploy to staging environment"
+        # Aqui você pode adicionar comandos para deploy real (Vercel, Netlify, etc.)
+
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: game/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./game
+        run: npm ci
+      
+      - name: Build for production
+        working-directory: ./game
+        run: npm run build
+      
+      - name: Deploy to production
+        run: echo "Deploy to production environment"
+        # Aqui você pode adicionar comandos para deploy real (Vercel, Netlify, etc.)

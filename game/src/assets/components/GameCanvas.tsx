@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Input } from "../engine/input";
 import { Fighter } from "../game/fighter";
+import { config } from "../../config/environment";
 
 const WIDTH = 800;
 const HEIGHT = 450;
@@ -22,6 +23,7 @@ export default function GameCanvas() {
         right: () => input.keys["KeyD"] || input.axisDir(0, 0) > 0,
         jump: () => input.keys["Space"] || input.btn(0, 0),
         attack: () => input.keys["KeyF"] || input.btn(0, 2),
+        canAttack: () => input.canAttack(),
       },
       FLOOR_Y
     );
@@ -33,6 +35,7 @@ export default function GameCanvas() {
         right: () => input.keys["ArrowRight"] || input.axisDir(1, 0) > 0,
         jump: () => input.keys["Enter"] || input.btn(1, 0),
         attack: () => input.keys["ShiftRight"] || input.btn(1, 2),
+        canAttack: () => input.canAttack(),
       },
       FLOOR_Y
     );
@@ -104,6 +107,7 @@ export default function GameCanvas() {
     rafRef.current = requestAnimationFrame(loop);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      input.destroy(); // Limpar recursos do input
     };
   }, []);
 
@@ -118,6 +122,13 @@ export default function GameCanvas() {
       <p style={{ fontFamily: "sans-serif", fontSize: 14 }}>
         P1: WASD + Space (pulo) + F (ataque) — P2: Setas + Enter + Right Shift
       </p>
+      {config.debug && (
+        <div style={{ fontFamily: "monospace", fontSize: 12, color: "#666", marginTop: 8 }}>
+          <div>Ambiente: {config.environment}</div>
+          <div>Versão: {config.version}</div>
+          <div>Debug: {config.debug ? 'Ativado' : 'Desativado'}</div>
+        </div>
+      )}
     </div>
   );
 }
