@@ -26,7 +26,15 @@ export class Fighter {
   attackDuration = 10; // frames
   facing: 1 | -1 = 1;
 
-  constructor(public controls: Controls, public floorY: number) {}
+  // ✅ defina os campos aqui
+  controls: Controls;
+  floorY: number;
+
+  // ✅ e atribua no construtor (sem "public")
+  constructor(controls: Controls, floorY: number) {
+    this.controls = controls;
+    this.floorY = floorY;
+  }
 
   get body(): Rect {
     return { x: this.pos.x, y: this.pos.y, w: this.w, h: this.h };
@@ -52,7 +60,6 @@ export class Fighter {
       this.onGround = false;
     }
 
-    // Usar rate limiting para ataques
     if (this.controls.attack() && !this.isAttacking && this.controls.canAttack?.()) {
       this.isAttacking = true;
       this.attackTimer = this.attackDuration;

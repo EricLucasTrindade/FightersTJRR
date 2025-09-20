@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Input } from "../engine/input";
 import { Fighter } from "../game/fighter";
 import { config } from "../../config/environment";
